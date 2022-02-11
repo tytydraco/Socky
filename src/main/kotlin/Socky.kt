@@ -44,7 +44,7 @@ class Socky {
 
     class Server(port: Int): Closeable {
         private val serverSocket = ServerSocket(port).also { it.soTimeout = SOCKET_TIMEOUT_MS }
-        private var clientSocketHelpers = mutableListOf<SocketHelper>()
+        var clientSocketHelpers = mutableListOf<SocketHelper>()
         private val runLoop = AtomicBoolean(true)
         private val loopThread: Thread
 
@@ -91,7 +91,7 @@ class Socky {
     }
 
     class Client(hostname: String, port: Int): Closeable {
-        private val socketHelper = SocketHelper(
+        val socketHelper = SocketHelper(
             Socket(hostname, port).also { it.soTimeout = SOCKET_TIMEOUT_MS }
         )
 
