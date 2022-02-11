@@ -7,7 +7,7 @@ import kotlin.concurrent.thread
 
 class Socky {
     companion object {
-        const val SOCKET_TIMEOUT_MS = 10_000
+        const val DEFAULT_SOCKET_TIMEOUT = 10_000
     }
 
     /**
@@ -42,8 +42,8 @@ class Socky {
         }
     }
 
-    class Server(port: Int): Closeable {
-        private val serverSocket = ServerSocket(port).also { it.soTimeout = SOCKET_TIMEOUT_MS }
+    class Server(port: Int, timeout: Int = DEFAULT_SOCKET_TIMEOUT): Closeable {
+        private val serverSocket = ServerSocket(port).also { it.soTimeout = timeout }
         var clientSocketHelpers = mutableListOf<SocketHelper>()
         private val runLoop = AtomicBoolean(true)
         private val loopThread: Thread
@@ -90,9 +90,9 @@ class Socky {
         }
     }
 
-    class Client(hostname: String, port: Int): Closeable {
+    class Client(hostname: String, port: Int, timeout: Int = DEFAULT_SOCKET_TIMEOUT): Closeable {
         val socketHelper = SocketHelper(
-            Socket(hostname, port).also { it.soTimeout = SOCKET_TIMEOUT_MS }
+            Socket(hostname, port).also { it.soTimeout = timeout }
         )
 
         fun send(byteArray: ByteArray) = socketHelper.send(byteArray)
